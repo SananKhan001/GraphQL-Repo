@@ -1,0 +1,41 @@
+input UserInput{
+    name:String,
+    email:String,
+    password:String,
+    phone:String,
+}
+
+type User{
+    userId:ID!, ## '!' --> means ID should not be null
+
+    name:String,
+    email:String,
+    password:String,
+    phone:String,
+
+    orderList:[Order]
+}
+
+type Order{
+    orderId:ID!,
+    orderDetails:String,
+    address:String,
+    price:Int
+
+    user:User
+}
+
+type Query{
+    getUser(userId:ID!):User
+    getAllUser:[User]
+    getOrder(orderId:ID!):Order
+    getAllOrders:[Order]
+}
+
+type Mutation{
+    createUser(name:String,email:String,password:String,phone:String):User
+    createUserByUserInput(userInput:UserInput!):User
+    deleteUser(userId:ID!):Boolean
+    createOrder(orderDetails:String,address:String,price:Int,userId:ID!):Order
+    deleteOrder(orderId:ID!):Boolean
+}
