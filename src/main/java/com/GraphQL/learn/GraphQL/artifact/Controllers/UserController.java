@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +20,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PreAuthorize("hasAuthority('user')")
     @MutationMapping // We can also specify name to map @MutationMapping(name = "name_specified_in_schema")
     public User createUser(@Argument String name,
                            @Argument String email,
@@ -33,6 +35,7 @@ public class UserController {
         return userService.createUser(user);
     }
 
+    @PreAuthorize("hasAuthority('admin')")
     @MutationMapping(name = "createUserByUserInput")
     public User createUser(@Argument UserInput userInput){
         User user = User.builder()
@@ -44,16 +47,19 @@ public class UserController {
         return userService.createUser(user);
     }
 
+    @PreAuthorize("permitAll()")
     @QueryMapping
     public List<User> getAllUser(){
         return userService.getAllUser();
     }
 
+    @PreAuthorize("hasAnyAuthority('admin', 'user')")
     @QueryMapping
     public User getUser(@Argument int userId){
         return userService.getUser(userId);
     }
 
+    @PreAuthorize("hasAnyAuthority('admin', 'user')")
     @MutationMapping
     public boolean deleteUser(@Argument int userId){
         return userService.deleteUser(userId);
