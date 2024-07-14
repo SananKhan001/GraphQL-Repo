@@ -65,12 +65,6 @@ class UserControllerTest {
                 .password(userInput.getPassword())
                 .phone(userInput.getPhone()).build();
 
-        response.put("name", userInput.getName());
-        response.put("email", userInput.getEmail());
-        response.put("userId", String.valueOf(userExpected.getUserId()));
-
-        String expectedResponse = response.toString();
-
         Mockito.when(userRepo.save(userInput)).thenReturn(userExpected);
 
         // language=GraphQL
@@ -88,6 +82,12 @@ class UserControllerTest {
            }
          }
         """;
+
+        response.put("name", userInput.getName());
+        response.put("email", userInput.getEmail());
+        response.put("userId", String.valueOf(userExpected.getUserId()));
+
+        String expectedResponse = response.toString();
 
         graphQlTester.document(document)
                 .variable("name", userInput.getName())
